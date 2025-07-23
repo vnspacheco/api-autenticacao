@@ -4,8 +4,9 @@ import br.com.api.autenticacao.adapters.database.mapper.request.UsuarioEntityReq
 import br.com.api.autenticacao.adapters.database.mapper.response.UsuarioEntityResponseMapper;
 import br.com.api.autenticacao.adapters.database.repository.UsuarioRepository;
 import br.com.api.autenticacao.domain.entity.Usuario;
-import br.com.api.autenticacao.domain.exception.UsuarioInvalid;
-import br.com.api.autenticacao.domain.exception.UsuarioNotFound;
+import br.com.api.autenticacao.domain.exception.UsuarioExistingException;
+import br.com.api.autenticacao.domain.exception.UsuarioUnauthorizedException;
+import br.com.api.autenticacao.domain.exception.UsuarioNotFoundException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -46,20 +47,22 @@ public class UsuarioServiceImpl implements UsuarioService {
                 return usuarioEntityResponseMapper.execute(usuarioEncontrado, token);
 
             } else {
-                throw new UsuarioInvalid("Usuário inválido");
+                throw new UsuarioUnauthorizedException("Senha inválida");
             }
 
         } else {
-            throw new UsuarioNotFound("Usuário não encontrado");
+            throw new UsuarioNotFoundException("Usuário não encontrado");
         }
     }
 
     @Override
     public Usuario cadastrar(Usuario usuario) {
-        usuario.setSenha(encoder.encode(usuario.getSenha()));
+        if (usuarioRepository.findById(usuario.getLogin()).isEmpty()) {
+            usuarioRepository.save(usuarioEntityRequestMapper.execute(usuario, encoder.encode(usuario.getSenha())));
+            return usuario;
 
-        usuarioRepository.save(usuarioEntityRequestMapper.execute(usuario));
-
-        return usuario;
+        } else {
+            throw new UsuarioExistingException("Usuário já existente");
+        }
     }
 }

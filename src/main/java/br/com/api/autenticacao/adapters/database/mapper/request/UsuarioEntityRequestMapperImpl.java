@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component;
 public class UsuarioEntityRequestMapperImpl implements UsuarioEntityRequestMapper {
 
     @Override
-    public Usuario execute(br.com.api.autenticacao.domain.entity.Usuario usuario) {
+    public Usuario execute(br.com.api.autenticacao.domain.entity.Usuario usuario, String senha) {
         return Usuario.builder()
                 .login(usuario.getLogin())
-                .senha(usuario.getSenha())
+                .senha(senha)
                 .build();
     }
 }
