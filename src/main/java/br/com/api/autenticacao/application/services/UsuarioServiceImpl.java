@@ -1,5 +1,6 @@
 package br.com.api.autenticacao.application.services;
 
+import br.com.api.autenticacao.adapters.beans.JwtConfiguration;
 import br.com.api.autenticacao.adapters.database.mapper.request.UsuarioEntityRequestMapper;
 import br.com.api.autenticacao.adapters.database.mapper.response.UsuarioEntityResponseMapper;
 import br.com.api.autenticacao.adapters.database.repository.UsuarioRepository;
@@ -23,8 +24,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final UsuarioEntityRequestMapper usuarioEntityRequestMapper;
     private final UsuarioEntityResponseMapper usuarioEntityResponseMapper;
+    private final JwtConfiguration jwtConfiguration;
     BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-    private static final String SECRET_KEY = "minha-chave-secreta-muito-segura-e-com-mais-de-32-bytes";
 
     @Override
     public Usuario autenticar(Usuario usuario) {
@@ -33,13 +34,13 @@ public class UsuarioServiceImpl implements UsuarioService {
                     .findById(usuario.getLogin()).get();
 
             if (encoder.matches(usuario.getSenha(), usuarioEncontrado.getSenha())) {
-                Algorithm algorithm = Algorithm.HMAC256(SECRET_KEY);
+                Algorithm algorithm = Algorithm.HMAC256(jwtConfiguration.getSecret());
 
                 String token = JWT.create()
-                        .withIssuer("auth-api")
+                        .withIssuer(jwtConfiguration.getIssuer())
                         .withSubject(usuario.getLogin())
                         .withClaim("scope", usuarioEncontrado.getScope() != null ? usuarioEncontrado.getScope() : "default")
-                        .withExpiresAt(LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00")))
+                        .withExpiresAt(LocalDateTime.now().plusHours(jwtConfiguration.getExpirationHours()).toInstant(ZoneOffset.of("-03:00")))
                         .sign(algorithm);
 
                 return usuarioEntityResponseMapper.execute(usuarioEncontrado, token);

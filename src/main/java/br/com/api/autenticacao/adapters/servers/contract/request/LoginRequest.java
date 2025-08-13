@@ -15,5 +15,7 @@ public class LoginRequest {
 
     @Size(max = 15, message = "O campo senha só pode ter 15 caracteres no máximo")
     private String senha;
-
+    
+    @Size(max = 30, message = "O campo scope só pode ter 30 caracteres no máximo")
+    private String scope;
 }
