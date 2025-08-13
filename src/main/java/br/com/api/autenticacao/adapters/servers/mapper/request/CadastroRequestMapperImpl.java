@@ -12,6 +12,7 @@ public class CadastroRequestMapperImpl implements CadastroRequestMapper {
         return Usuario.builder()
                 .login(cadastroRequest.getLogin())
                 .senha(cadastroRequest.getSenha())
+                .scope(cadastroRequest.getScope())
                 .build();
     }
 }

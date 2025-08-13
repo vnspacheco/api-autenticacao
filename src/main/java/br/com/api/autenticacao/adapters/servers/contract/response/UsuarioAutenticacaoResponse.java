@@ -8,5 +8,6 @@ import lombok.Getter;
 public class UsuarioAutenticacaoResponse {
 
     private String token;
+    private String scope;
 
 }

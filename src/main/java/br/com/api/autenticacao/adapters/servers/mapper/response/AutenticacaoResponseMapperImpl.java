@@ -13,6 +13,7 @@ public class AutenticacaoResponseMapperImpl implements AutenticacaoResponseMappe
         return UsuarioAutenticacaoDataResponse.builder()
                 .data(UsuarioAutenticacaoResponse.builder()
                         .token(usuario.getToken())
+                        .scope(usuario.getScope())
                         .build())
                 .build();
     }

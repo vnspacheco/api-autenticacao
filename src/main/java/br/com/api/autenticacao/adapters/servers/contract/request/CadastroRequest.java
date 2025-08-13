@@ -1,7 +1,8 @@
 package br.com.api.autenticacao.adapters.servers.contract.request;
 
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,5 +16,9 @@ public class CadastroRequest {
 
     @Size(max = 15, message = "O campo senha só pode ter 15 caracteres no máximo")
     private String senha;
+
+    @NotNull
+    @Size(max = 30, message = "O campo scope só pode ter 30 caracteres no máximo")
+    private String scope;
 
 }

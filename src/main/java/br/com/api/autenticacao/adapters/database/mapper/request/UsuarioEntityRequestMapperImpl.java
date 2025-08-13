@@ -11,6 +11,7 @@ public class UsuarioEntityRequestMapperImpl implements UsuarioEntityRequestMappe
         return Usuario.builder()
                 .login(usuario.getLogin())
                 .senha(senha)
+                .scope(usuario.getScope())
                 .build();
     }
 }

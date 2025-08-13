@@ -11,6 +11,7 @@ public class UsuarioEntityResponseMapperImpl implements UsuarioEntityResponseMap
         return Usuario.builder()
                 .login(usuario.getLogin())
                 .senha(usuario.getSenha())
+                .scope(usuario.getScope())
                 .token(token)
                 .build();
     }

@@ -10,7 +10,7 @@ import br.com.api.autenticacao.adapters.servers.mapper.response.AutenticacaoResp
 import br.com.api.autenticacao.adapters.servers.mapper.response.CadastroResponseMapper;
 import br.com.api.autenticacao.application.services.UsuarioService;
 import br.com.api.autenticacao.domain.entity.Usuario;
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

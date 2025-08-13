@@ -11,4 +11,5 @@ public class Usuario {
     private String login;
     private String senha;
     private String token;
+    private String scope;
 }

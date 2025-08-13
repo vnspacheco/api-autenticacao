@@ -11,5 +11,6 @@ public class UsuarioCadastroResponse {
 
     private String login;
     private String senha;
+    private String scope;
 
 }

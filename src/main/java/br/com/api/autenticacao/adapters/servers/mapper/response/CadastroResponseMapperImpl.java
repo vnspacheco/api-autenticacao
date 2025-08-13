@@ -14,6 +14,7 @@ public class CadastroResponseMapperImpl implements CadastroResponseMapper {
                 .data(UsuarioCadastroResponse.builder()
                         .login(usuario.getLogin())
                         .senha(usuario.getSenha())
+                        .scope(usuario.getScope())
                         .build())
                 .build();
     }

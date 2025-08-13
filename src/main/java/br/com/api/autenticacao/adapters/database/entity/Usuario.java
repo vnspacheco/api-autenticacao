@@ -1,8 +1,8 @@
 package br.com.api.autenticacao.adapters.database.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,5 +21,8 @@ public class Usuario {
 
     @Column(name = "senha")
     private String senha;
+
+    @Column(name = "scope")
+    private String scope;
 
 }
