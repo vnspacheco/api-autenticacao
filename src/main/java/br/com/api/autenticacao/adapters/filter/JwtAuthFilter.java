@@ -76,6 +76,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         errorDetails.put("status", status.value());
         errorDetails.put("message", message);
         
-        response.getWriter().write(objectMapper.writeValueAsString(errorDetails));
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("data", errorDetails);
+        
+        response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
 }

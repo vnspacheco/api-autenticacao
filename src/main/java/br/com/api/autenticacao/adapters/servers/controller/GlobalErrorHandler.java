@@ -1,6 +1,7 @@
 package br.com.api.autenticacao.adapters.servers.controller;
 
 import br.com.api.autenticacao.adapters.servers.contract.response.ErrorResponse;
+import br.com.api.autenticacao.adapters.servers.contract.response.ErrorDataResponse;
 import br.com.api.autenticacao.domain.exception.UsuarioExistingException;
 import br.com.api.autenticacao.domain.exception.UsuarioUnauthorizedException;
 import br.com.api.autenticacao.domain.exception.UsuarioNotFoundException;
@@ -20,63 +21,87 @@ import java.util.stream.Collectors;
 public class GlobalErrorHandler {
 
     @ExceptionHandler(UsuarioUnauthorizedException.class)
-    ResponseEntity<ErrorResponse> usuarioInvalidException(UsuarioUnauthorizedException e, WebRequest request) {
+    ResponseEntity<ErrorDataResponse> usuarioInvalidException(UsuarioUnauthorizedException e, WebRequest request) {
         HttpStatus STATUS_CODE = HttpStatus.UNAUTHORIZED;
 
-        ErrorResponse response = ErrorResponse.builder()
+        ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(STATUS_CODE.value())
                 .message(e.getMessage())
+                .build();
+
+        ErrorDataResponse response = ErrorDataResponse.builder()
+                .data(errorResponse)
                 .build();
 
         return new ResponseEntity<>(response, STATUS_CODE);
     }
 
     @ExceptionHandler(UsuarioNotFoundException.class)
-    ResponseEntity<ErrorResponse> usuarioNotFoundException(UsuarioNotFoundException e, WebRequest request) {
+    ResponseEntity<ErrorDataResponse> usuarioNotFoundException(UsuarioNotFoundException e, WebRequest request) {
         HttpStatus STATUS_CODE = HttpStatus.NOT_FOUND;
 
-        ErrorResponse response = ErrorResponse.builder()
+        ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(STATUS_CODE.value())
                 .message(e.getMessage())
+                .build();
+
+        ErrorDataResponse response = ErrorDataResponse.builder()
+                .data(errorResponse)
                 .build();
 
         return new ResponseEntity<>(response, STATUS_CODE);
     }
 
     @ExceptionHandler(UsuarioExistingException.class)
-    ResponseEntity<ErrorResponse> usuarioExistedException(UsuarioExistingException e, WebRequest request) {
+    ResponseEntity<ErrorDataResponse> usuarioExistedException(UsuarioExistingException e, WebRequest request) {
         HttpStatus STATUS_CODE = HttpStatus.CONFLICT;
 
-        ErrorResponse response = ErrorResponse.builder()
+        ErrorResponse errorResponse = ErrorResponse.builder()
                 .status(STATUS_CODE.value())
                 .message(e.getMessage())
+                .build();
+
+        ErrorDataResponse response = ErrorDataResponse.builder()
+                .data(errorResponse)
                 .build();
 
         return new ResponseEntity<>(response, STATUS_CODE);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> methodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErrorDataResponse> methodArgumentNotValidException(MethodArgumentNotValidException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                ex.getBindingResult()
+                        .getFieldErrors()
+                        .stream()
+                        .map(FieldError::getDefaultMessage)
+                        .collect(Collectors.toList())
+                        .toString());
+
+        ErrorDataResponse response = ErrorDataResponse.builder()
+                .data(errorResponse)
+                .build();
+
         return ResponseEntity
                 .status(HttpStatus.UNPROCESSABLE_ENTITY)
-                .body(new ErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
-                        ex.getBindingResult()
-                                .getFieldErrors()
-                                .stream()
-                                .map(FieldError::getDefaultMessage)
-                                .collect(Collectors.toList())
-                                .toString()));
+                .body(response);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<?> constraintViolationException(ConstraintViolationException ex) {
+    public ResponseEntity<ErrorDataResponse> constraintViolationException(ConstraintViolationException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
+                ex.getConstraintViolations()
+                        .stream()
+                        .map(ConstraintViolation::getMessage)
+                        .collect(Collectors.toList())
+                        .toString());
+
+        ErrorDataResponse response = ErrorDataResponse.builder()
+                .data(errorResponse)
+                .build();
+
         return ResponseEntity
                 .status(HttpStatus.UNPROCESSABLE_ENTITY)
-                .body(new ErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(),
-                        ex.getConstraintViolations()
-                                .stream()
-                                .map(ConstraintViolation::getMessage)
-                                .collect(Collectors.toList())
-                                .toString()));
+                .body(response);
     }
 }
